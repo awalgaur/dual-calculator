@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dual Calculators</title>
+  <title>Dual Calculator</title>
+  https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
     h1 { text-align: center; }
@@ -12,13 +13,14 @@
     .tab.active { background: #4285f4; color: white; }
     .content { display: none; }
     .content.active { display: block; }
-    .calculator, .converter { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
+    .calculator max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 10px; }
     input, select, button { width: 100%; padding: 10px; margin: 10px 0; }
+    #buttons button { width: 19%; margin: 1%; font-size: 16px; }
   </style>
 </head>
 <body>
 
-<h1>Dual Calculators</h1>
+<h1>Dual Calculator</h1>
 
 <div class="tabs">
   <div class="tab active" onclick="showTab('scientific')">Scientific Calculator</div>
@@ -27,8 +29,40 @@
 
 <div id="scientific" class="content active">
   <div class="calculator">
-    <input type="text" id="sci-display" placeholder="Enter expression" />
-    <button onclick="calculateScientific()">Calculate</button>
+    <input type="text" id="sci-display" placeholder="Enter expression" readonly />
+    <div id="buttons">
+      <button onclick="append('7')">7</button>
+      <button onclick="append('8')">8</button>
+      <button onclick="append('9')">9</button>
+      <button onclick="append('/')">÷</button>
+      <button onclick="append('sin(')">sin</button>
+
+      <button onclick="append('4')">4</button>
+      <button onclick="append('5')">5</button>
+      <button onclick="append('6')">6</button>
+      <button onclick="append('*')">×</button>
+      <button onclick="append('cos(')">cos</button>
+
+      <button onclick="append('1')">1</button>
+      <button onclick="append('2')">2</button>
+      <button onclick="append('3')">3</button>
+      <button onclick="append('-')">−</button>
+      <button onclick="append('tan(')">tan</button>
+
+      <button onclick="append('0')">0</button>
+      <button onclick="append('.')">.</button>
+      <button onclick="append('+')">+</button>
+      <button onclick="append('sqrt(')">√</button>
+      <button onclick="append('log(')">log</button>
+
+      <button onclick="append('ln(')">ln</button>
+      <button onclick="append('^')">^</button>
+      <button onclick="append('!')">!</button>
+      <button onclick="clearDisplay()">C</button>
+      <button onclick="backspace()">←</button>
+
+      <button onclick="calculateScientific()">=</button>
+    </div>
     <p id="sci-result"></p>
   </div>
 </div>
@@ -59,10 +93,24 @@
     document.getElementById(tabId).classList.add('active');
   }
 
+  function append(value) {
+    document.getElementById('sci-display').value += value;
+  }
+
+  function clearDisplay() {
+    document.getElementById('sci-display').value = '';
+    document.getElementById('sci-result').innerText = '';
+  }
+
+  function backspace() {
+    let display = document.getElementById('sci-display');
+    display.value = display.value.slice(0, -1);
+  }
+
   function calculateScientific() {
     const input = document.getElementById('sci-display').value;
     try {
-      const result = eval(input); // Basic eval for demo; replace with math.js for safety
+      const result = math.evaluate(input);
       document.getElementById('sci-result').innerText = `Result: ${result}`;
     } catch (e) {
       document.getElementById('sci-result').innerText = 'Invalid expression';
@@ -74,7 +122,6 @@
     const from = document.getElementById('from').value;
     const to = document.getElementById('to').value;
 
-    // Replace with a real API key and endpoint
     const response = await fetch(`https://api.exchangerate-api.com/v4/latest/${from}`);
     const data = await response.json();
     const rate = data.rates[to];
